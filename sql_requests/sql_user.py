@@ -7,6 +7,13 @@ password = config.db.password
 database = config.db.database
 host = config.db.host
 
+#Подсчет количества пользователей бота
+async def count_users():
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    counter = await conn.fetchval('''SELECT COUNT(user_id) FROM users''')
+    await conn.close()
+    return int(counter)
+
 #Запрос для проверки наличия юзера в БД
 async def check_user(user_id):
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host)

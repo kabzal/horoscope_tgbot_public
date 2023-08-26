@@ -7,7 +7,7 @@ from aiogram.types import Message, CallbackQuery, PhotoSize
 from aiogram.fsm.storage.memory import MemoryStorage
 from filters.filters import IsAdminMess, IsAdminCall
 from keyboards.admin_kb import admin_znaki_kb
-from sql_requests.sql_user import create_pic, create_txt, create_ad
+from sql_requests.sql_user import create_pic, create_txt, create_ad, count_users
 from datetime import datetime
 
 router: Router = Router()
@@ -32,7 +32,7 @@ class FSMAd(StatesGroup):
     fill_ad_pic = State()
     fill_ad_datetime = State()
 
-@router.message(Command(commands='help'))
+@router.message(Command(commands='help'), StateFilter(default_state))
 async def help_command(message: Message):
     await message.answer(text='Вы являетесь администратором бота.\n\n'
                          'Чтобы добавить картинку в базу данных, '
@@ -41,7 +41,13 @@ async def help_command(message: Message):
                          'нажмите /new_text\n\n'
                          'Чтобы добавить рекламу, '
                          'нажмите /new_ad\n\n'
+                         'Чтобы увидеть количество пользователей бота, нажмите /count_users\n\n'
                          'Команда /start позволяет выбрать или изменить Ваш знак зодиака')
+
+@router.message(Command(commands='count_users'), StateFilter(default_state))
+async def count_users_command(message: Message):
+    number_of_users = await count_users()
+    await message.answer(text=f'Текущее количество пользователей бота: <b>{number_of_users}</b>')
 
 @router.message(Command(commands='cancel'), ~StateFilter(default_state))
 async def cancel_process(message: Message, state: FSMContext):
@@ -53,7 +59,7 @@ async def cancel_process(message: Message):
     await message.answer(text='Отменять нечего.')
 
 #Машина состояний для картинок
-@router.message(Command(commands='new_pic'))
+@router.message(Command(commands='new_pic'), StateFilter(default_state))
 async def new_pic_command(message: Message, state: FSMContext):
     await message.answer(text='Пришлите картинку.\n\nЕсли хотите отменить загрузку картинки, нажмите /cancel')
     await state.set_state(FSMPic.fill_pic)
@@ -76,7 +82,7 @@ async def warning_not_photo(message: Message):
 
 
 #Машина состояний для текстов гороскопов
-@router.message(Command(commands='new_text'))
+@router.message(Command(commands='new_text'), StateFilter(default_state))
 async def new_text_command(message: Message, state: FSMContext):
     await message.answer(text='Пришлите новый текст.\n\nЕсли хотите отменить загрузку текста, нажмите /cancel')
     await state.set_state(FSMText.fill_text)
@@ -97,7 +103,7 @@ async def warning_not_text(message: Message):
 
 
 #Машина состояний для рекламы
-@router.message(Command(commands='new_ad'))
+@router.message(Command(commands='new_ad'), StateFilter(default_state))
 async def new_ad_command(message: Message, state: FSMContext):
     await message.answer(text='Введите текст рекламного сообщения\n\nЕсли хотите отменить создание рекламного сообщения, нажмите /cancel')
     await state.set_state(FSMAd.fill_ad_text)
