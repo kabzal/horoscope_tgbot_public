@@ -8,4 +8,4 @@ router: Router = Router()
 # не предусмотренные логикой работы бота
 @router.message()
 async def send_echo(message: Message):
-    await message.answer(f'Прошу прощения, я вас не понимаю. Вы можете ознакомиться со списком доступных команд с помощью /help')
+    await message.answer('Прошу прощения, я вас не понимаю. Вы можете ознакомиться со списком доступных команд с помощью /help')

@@ -8,7 +8,6 @@ from html import escape
 
 router: Router = Router()
 
-list_of_znaks = ['oven', 'telec', 'bliznecy', 'rak', 'lev', 'deva', 'vesy', 'skorpion', 'strelec', 'kozerog', 'vodolei', 'ryby']
 rus_znaks = {'oven': 'Овен',
              'telec': 'Телец',
              'bliznecy': 'Близнецы',
@@ -22,12 +21,14 @@ rus_znaks = {'oven': 'Овен',
              'vodolei': 'Водолей',
              'ryby': 'Рыбы'}
 
+
 @router.message(CommandStart())
 async def process_start_command(message: Message):
     await message.answer(text='Добро пожаловать в мир астрологии и предсказаний!\n'
                          'Я здесь, чтобы помочь тебе исследовать тайны звезд и найти ответы на вопросы о будущем. '
                          'Получай увлекательные прогнозы на каждый день. Давай вместе раскроем завесу загадок!\n\n'
                          'Выберите свой знак зодиака: 👇', reply_markup=znaki_kb)
+
 
 @router.callback_query(Text(text='back_to_znaks'))
 async def process_start_again_command(message: Message):
@@ -36,12 +37,14 @@ async def process_start_again_command(message: Message):
                          'Получай увлекательные прогнозы на каждый день. Давай вместе раскроем завесу загадок!\n\n'
                          'Выберите свой знак зодиака: 👇', reply_markup=znaki_kb)
 
+
 @router.message(Command(commands='help'))
 async def process_help_command(message: Message):
     await message.answer(text='Этот бот присылает <b>ежедневные гороскопы</b> для вашего знака зодиака.\n\n'
                          'Чтобы выбрать или изменить свой знак зодиака и получить гороскоп на сегодня, нажмите /start.\n\n'
                          'Чтобы ознакомиться со списком доступных команд, нажмите /help.\n\n'
                          'Чтобы ознакомиться с информацией о заказе рекламы и о разработчиках бота, нажмите /info')
+
 
 @router.message(Command(commands='info'))
 async def process_info_command(message: Message):
@@ -50,8 +53,11 @@ async def process_info_command(message: Message):
                          'Для более подробной информации о команде нажмите на кнопку <b>"Канал BotDesigners"</b>',
                          reply_markup=info_kb)
 
+
+# Проверка того, что коллбек есть в списке знаков
 def true_znak_b(callback: CallbackQuery):
-    return callback.data in list_of_znaks
+    return callback.data in rus_znaks.keys()
+
 
 @router.callback_query(true_znak_b)
 async def give_random_goroscop(callback: CallbackQuery):

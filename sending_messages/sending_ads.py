@@ -3,6 +3,7 @@ from aiogram import Bot
 import datetime
 from sql_requests.sql_user import show_ads, show_users, delete_ad
 
+
 async def create_ad(bot: Bot):
     offset = datetime.timezone(datetime.timedelta(hours=3))
     now = datetime.datetime.now(offset)
@@ -24,6 +25,7 @@ async def create_ad(bot: Bot):
                     except:
                         continue
         await delete_ad(ad_datetime=formatted_now)
+
 
 async def send_ad(bot: Bot):
     while True:

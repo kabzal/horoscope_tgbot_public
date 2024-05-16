@@ -18,6 +18,7 @@ rus_znaks = {'oven': 'Овен',
              'vodolei': 'Водолей',
              'ryby': 'Рыбы'}
 
+
 async def prepare_today_goroscop(bot: Bot):
     list_of_users = [i['user_id'] for i in (await show_users())]
 
@@ -29,8 +30,10 @@ async def prepare_today_goroscop(bot: Bot):
         pic = str(random.choice(pics)).replace("<Record pic_id='", '').replace("'>", '')
         try:
             await bot.send_photo(chat_id=user, photo=pic, caption=f'Ваш знак зодиака: <b>{rus_znaks[user_znak]}</b>\n\n<b>Гороскоп на сегодня:</b>\n{escape(txt_goroscop)}')
-        except:
+        except Exception as e:
+            print(e)
             continue
+
 
 async def send_today_goroscop(bot: Bot):
     while True:
